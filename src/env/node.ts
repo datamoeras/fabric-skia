@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-globals */
-import type { Canvas as NodeCanvas } from 'canvas';
-import { JSDOM } from 'jsdom';
+import type { Canvas as NodeCanvas } from 'skia-canvas';
+import { JSDOM } from '@datamoeras/jsdom-skia';
 // @ts-expect-error internal import
-import utils from 'jsdom/lib/jsdom/living/generated/utils.js';
+import utils from '@datamoeras/jsdom-skia/lib/jsdom/living/generated/utils.js';
 import { NodeGLProbe } from '../filters/GLProbes/NodeGLProbe';
 import type { TCopyPasteData, TFabricEnv } from './types';
 

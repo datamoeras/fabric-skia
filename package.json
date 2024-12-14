@@ -1,5 +1,5 @@
 {
-  "name": "fabric",
+  "name": "@datamoeras/fabric-skia",
   "description": "Object model for HTML5 canvas, and SVG-to-canvas parser. Backed by jsdom and node-canvas.",
   "homepage": "http://fabricjs.com/",
   "version": "6.5.3",
@@ -68,8 +68,8 @@
     "babel-src": "babel --no-babelrc src --extensions '.ts' --ignore 'src/constants.ts' --out-dir dist/src --config-file ./.babelrcAlt"
   },
   "optionalDependencies": {
-    "canvas": "^2.11.2",
-    "jsdom": "^20.0.1"
+    "@datamoeras/jsdom-skia": "file:../datamoeras-jsdom-skia-25.0.1.tgz",
+    "skia-canvas": "^2.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.9",
@@ -106,6 +106,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.5.0",
     "kill-port": "^2.0.1",
+    "lodash": "^4.17.21",
     "micromatch": "^4.0.5",
     "moment": "^2.29.1",
     "nyc": "^15.1.0",
