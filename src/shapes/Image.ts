@@ -17,8 +17,9 @@ import type { LoadImageOptions } from '../util/misc/objectEnlive';
 import {
   enlivenObjectEnlivables,
   enlivenObjects,
-  loadImage,
+  // loadImage,
 } from '../util/misc/objectEnlive';
+import { loadImage } from 'skia-canvas';
 import { parsePreserveAspectRatioAttribute } from '../util/misc/svgParsing';
 import { classRegistry } from '../ClassRegistry';
 import { FabricObject, cacheProperties } from './Object/FabricObject';
@@ -164,7 +165,7 @@ export class FabricImage<
 
   declare preserveAspectRatio: string;
 
-  protected declare src: string;
+  declare protected src: string;
 
   declare filters: BaseFilter<string, Record<string, any>>[];
   declare resizeFilter: Resize;
@@ -233,7 +234,7 @@ export class FabricImage<
     this._element = element;
     this._originalElement = element;
     this._setWidthHeight(size);
-    element.classList.add(FabricImage.CSS_CANVAS);
+    // element.classList.add(FabricImage.CSS_CANVAS);
     if (this.filters.length !== 0) {
       this.applyFilters();
     }
@@ -650,6 +651,10 @@ export class FabricImage<
       maxDestW = Math.min(w, elWidth / scaleX - cropX),
       maxDestH = Math.min(h, elHeight / scaleY - cropY);
 
+    if (elWidth === undefined) {
+      log('error', 'image without width');
+      return;
+    }
     elementToDraw &&
       ctx.drawImage(elementToDraw, sX, sY, sW, sH, x, y, maxDestW, maxDestH);
   }
@@ -790,12 +795,34 @@ export class FabricImage<
    * @param {AbortSignal} [options.signal] handle aborting, see https://developer.mozilla.org/en-US/docs/Web/API/AbortController/signal
    * @returns {Promise<FabricImage>}
    */
-  static fromObject<T extends TOptions<SerializedImageProps>>(
+  static async fromObject<T extends TOptions<SerializedImageProps>>(
     { filters: f, resizeFilter: rf, src, crossOrigin, type, ...object }: T,
     options?: Abortable,
   ) {
-    return Promise.all([
-      loadImage(src!, { ...options, crossOrigin }),
+    const image = await loadImage(src!, { ...options, crossOrigin });
+    /*
+    const loader = new Promise((resolve, reject) => {
+      image.onload = (l) => {
+        resolve(l);
+      };
+      image.onerror = (e) => {
+        reject(e);
+      };
+    });
+    log('error', 'loading image');
+    await loader;
+    */
+
+    const { naturalWidth, naturalHeight } = image;
+    const { width, height } = image;
+    log('error', 'loaded image', {
+      width,
+      height,
+      naturalWidth,
+      naturalHeight,
+    });
+    return await Promise.all([
+      image,
       f && enlivenObjects<BaseFilter<string>>(f, options),
       // TODO: redundant - handled by enlivenObjectEnlivables
       rf && enlivenObjects<BaseFilter<'Resize'>>([rf], options),
